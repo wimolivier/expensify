@@ -3,14 +3,14 @@ import { shallow } from 'enzyme';
 import { AddExpensePage } from '../../components/AddExpensePage';
 import expenses from '../fixtures/expenses';
 
-let addExpense, history, wrapper;
+let startAddExpense, history, wrapper;
 
 // Jest lifecycle method to help us no duplicate code
 // See http://facebook.github.io/jest/docs/en/api.html#beforeeachfn-timeout
 beforeEach(() => {
-  addExpense = jest.fn();                 // test spy
+  startAddExpense = jest.fn();                 // test spy
   history = { push: jest.fn() };        // another test spy
-  wrapper = shallow(<AddExpensePage addExpense={addExpense} history={history} />);
+  wrapper = shallow(<AddExpensePage startAddExpense={startAddExpense} history={history} />);
 });
 
 test('should render AddExpensePage correctly', () => {
@@ -20,5 +20,5 @@ test('should render AddExpensePage correctly', () => {
 test('should handle onSubmit', () => {
   wrapper.find('ExpenseForm').prop('onSubmit')(expenses[1]);        // use a sample expense from our fixtures to test with
   expect(history.push).toHaveBeenLastCalledWith('/');
-  expect(addExpense).toHaveBeenLastCalledWith(expenses[1]);
+  expect(startAddExpense).toHaveBeenLastCalledWith(expenses[1]);
 });

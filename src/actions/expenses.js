@@ -1,23 +1,45 @@
 import uuid from 'uuid';
+import database from '../firebase/firebase';
+
+/*
+  Current
+  1. Component calls an action generator
+  2. Action generator returns an object
+  3. Component dispatches object
+  4. Redux store changes
+
+  Async Redux Actions
+  1. Component calls an action generator
+  2. Action generator returns a function
+  3. Component dispatches function
+  4. The function runs (has the ability to dispatch other actions and do whatever it wants)
+*/
+
 
 // ADD_EXPENSE
-export const addExpense = (
-  {
-    description = '',
-    note = '',
-    amount = 0,
-    createdAt = 0
-  } = {}
-) => ({
+export const addExpense = (expense) => ({
   type: 'ADD_EXPENSE',
-  expense: {
-    id: uuid(),
-    description: description,
-    note,                       // can also use shorthand method because key/value names are the same
-    amount: amount,
-    createdAt: createdAt
-  }
+  expense
 });
+
+export const startAddExpense = (expensedata = {}) => {
+  return (dispatch) => {
+    const {
+      description = '',
+      note = '',
+      amount = 0,
+      createdAt = 0
+    } = expensedata;
+    const expense = { description, note, amount, createdAt };
+
+    return database.ref('expenses').push(expense).then((ref) => {       // return'ing so we can chain promises in the test file
+      dispatch(addExpense({
+        id: ref.key,
+        ...expense
+      }));
+    });
+  };
+};
 
 // REMOVE_EXPENSE
 export const removeExpense = ({ id } = {}) => ({           // destructure 'id' off the object passed in (or set to empty object if nothing passed in)
