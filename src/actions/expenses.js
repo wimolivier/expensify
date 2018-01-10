@@ -49,7 +49,7 @@ export const removeExpense = ({ id } = {}) => ({           // destructure 'id' o
 
 export const startRemoveExpense = ({ id } = {}) => {
   return (dispatch) => {
-    return database.ref('expenses/${id}').remove().then(() => {                 // return the Promise
+    return database.ref(`expenses/${id}`).remove().then(() => {                 // return the Promise
       dispatch(removeExpense({ id }));
     });
   };
