@@ -49,7 +49,7 @@ export const removeExpense = ({ id } = {}) => ({           // destructure 'id' o
 
 export const startRemoveExpense = ({ id } = {}) => {
   return (dispatch) => {
-    return database.ref(`expenses/${id}`).remove().then(() => {                 // return the Promise
+    return database.ref(`expenses/${id}`).remove().then(() => {                 // return the Promise so we can use it in the test case
       dispatch(removeExpense({ id }));
     });
   };
@@ -61,6 +61,14 @@ export const editExpense = (id, updates) => ({
   id,
   updates
 });
+
+export const startEditExpense = (id, updates) => {
+  return (dispatch) => {
+    return database.ref(`expenses/${id}`).update(updates).then(() => {          // return the Promise so we can use it in the test case
+      dispatch(editExpense(id, updates));
+    });
+  };
+};
 
 // SET_EXPENSES
 export const setExpenses = (expenses) => ({
