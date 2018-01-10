@@ -47,6 +47,14 @@ export const removeExpense = ({ id } = {}) => ({           // destructure 'id' o
   id: id                                            // also pass in the 'id' to remove from the array
 });
 
+export const startRemoveExpense = ({ id } = {}) => {
+  return (dispatch) => {
+    return database.ref('expenses/${id}').remove().then(() => {                 // return the Promise
+      dispatch(removeExpense({ id }));
+    });
+  };
+};
+
 // EDIT_EXPENSE
 export const editExpense = (id, updates) => ({
   type: 'EDIT_EXPENSE',
