@@ -23,7 +23,8 @@ export const addExpense = (expense) => ({
 });
 
 export const startAddExpense = (expensedata = {}) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {                                      // can also get 'getState' from redux-thunk (check the docs)
+    const uid = getState().auth.uid;
     const {
       description = '',
       note = '',
@@ -32,7 +33,7 @@ export const startAddExpense = (expensedata = {}) => {
     } = expensedata;
     const expense = { description, note, amount, createdAt };
 
-    return database.ref('expenses').push(expense).then((ref) => {       // return'ing so we can chain promises in the test file
+    return database.ref(`users/${uid}/expenses`).push(expense).then((ref) => {       // return'ing so we can chain promises in the test file
       dispatch(addExpense({
         id: ref.key,
         ...expense
@@ -48,8 +49,9 @@ export const removeExpense = ({ id } = {}) => ({           // destructure 'id' o
 });
 
 export const startRemoveExpense = ({ id } = {}) => {
-  return (dispatch) => {
-    return database.ref(`expenses/${id}`).remove().then(() => {                 // return the Promise so we can use it in the test case
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
+    return database.ref(`users/${uid}/expenses/${id}`).remove().then(() => {                 // return the Promise so we can use it in the test case
       dispatch(removeExpense({ id }));
     });
   };
@@ -63,8 +65,9 @@ export const editExpense = (id, updates) => ({
 });
 
 export const startEditExpense = (id, updates) => {
-  return (dispatch) => {
-    return database.ref(`expenses/${id}`).update(updates).then(() => {          // return the Promise so we can use it in the test case
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
+    return database.ref(`users/${uid}/expenses/${id}`).update(updates).then(() => {          // return the Promise so we can use it in the test case
       dispatch(editExpense(id, updates));
     });
   };
@@ -77,8 +80,9 @@ export const setExpenses = (expenses) => ({
 });
 
 export const startSetExpenses = () => {
-  return (dispatch) => {
-    return database.ref('expenses').once('value').then((snapshot) => {
+  return (dispatch, getState) => {                                              // also gets 'getState' from redux-thunk (check docs)
+    const uid = getState().auth.uid;
+    return database.ref(`users/${uid}/expenses`).once('value').then((snapshot) => {
       const expenses = [];
 
       snapshot.forEach((childSnapshot) => {
