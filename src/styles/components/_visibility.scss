@@ -1,0 +1,11 @@
+.show-for-mobile {
+  @media (min-width: $desktop-breakpoint) {
+    display: none
+  }
+}
+
+.show-for-desktop {
+  @media (max-width: $desktop-breakpoint - .01rem) {          // make sure they don't occur at the same time (subtract a SMALL value)
+    display: none;
+  }
+}
